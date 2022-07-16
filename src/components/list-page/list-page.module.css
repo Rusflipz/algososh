@@ -1,0 +1,41 @@
+.circle_conteiner {
+    width: fit-content;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: row;
+    margin-top: 110px;
+    max-width: 944px;
+    flex-wrap: wrap;
+}
+
+.circle {
+    margin-left: 16px;
+    margin-bottom: 80px;
+}
+
+.circle:first-child {
+    margin-left: 0px;
+}
+
+.circle:nth-child(11) {
+    margin-left: 0px;
+}
+
+.block {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.upperCircle {
+    position: absolute;
+    top: -70px;
+    left: 12px;
+}
+
+.lowerCircle {
+    position: absolute;
+    top: 120px;
+    left: 12px;
+}

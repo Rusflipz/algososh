@@ -18,6 +18,9 @@ interface CounterState {
     queueButtonActive: boolean,
     deleteQueueButton: boolean,
     clearQueueButton: boolean,
+    typeSort: string,
+    isLoader: boolean,
+    listString: string,
 }
 
 
@@ -39,6 +42,9 @@ export const initialState: CounterState = {
     queueButtonActive: true,
     deleteQueueButton: false,
     clearQueueButton: false,
+    typeSort: 'choice',
+    isLoader: false,
+    listString: '',
 }
 
 export const stringSlice = createSlice({
@@ -104,13 +110,22 @@ export const stringSlice = createSlice({
         clearQueueButtonDisable: (state) => {
             state.clearQueueButton = false
         },
+        setTypeSort: (state, { payload }) => {
+            state.typeSort = payload
+        },
+        setInProgress: (state, { payload }) => {
+            state.isLoader = payload
+        },
+        setListString: (state, { payload }) => {
+            state.listString = payload
+        }
     }
 })
 
 export const {
     getString, getFibonacci, doStringButtonLoader, doStringButtonNormal, doFibonacciButtonLoader, doFibonacciButtonNormal, doStringFalse,
     doFibonacciFalse, getStack, doStackFull, doStackEmpty, doStackFalse, getQueue, deleteQueueButtonActive, deleteQueueButtonDisable,
-    clearQueueButtonActive, clearQueueButtonDisable
+    clearQueueButtonActive, clearQueueButtonDisable, setTypeSort, setInProgress, setListString
 
 } = stringSlice.actions
 

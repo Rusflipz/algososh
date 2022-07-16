@@ -4,14 +4,14 @@ import styles from "./input-form.module.css";
 import { Button } from "../ui/button/button";
 import { Input } from "../ui/input/input";
 import { useDispatch, useSelector } from "react-redux";
-import { getFibonacci, getQueue, getStack, getString, stringSelector } from "../../services/slice/slice"
+import { getFibonacci, getQueue, getStack, getString, setTypeSort, stringSelector, setListString } from "../../services/slice/slice"
 import { RadioInput } from "../ui/radio-input/radio-input";
 import { Direction } from "../../types/direction";
 
-export const InputForm: any = (props: { delete: () => void; clear: () => void; random: () => void; startSortingUp: () => void; }) => {
+export const InputForm: any = (props: { delete: () => void; clear: () => void; random: () => void; clickSortingAscending: () => void; clickSortingDescending: () => void; addToIndex: (indexValue: any, listValue: any) => void; removeToIndex: (indexValue: any, listValue: any) => void; addToHead: (listValue: any) => void; addToTail: (listString: any) => void; removeFromHead: () => void; removeFromTail: () => void; }) => {
 
     const dispatch = useDispatch();
-    const { fibonacciButtonLoader, stringButtonLoader, isStackEmpty, queueSucsess, deleteQueueButton, clearQueueButton, resetArray } = useSelector(stringSelector);
+    const { fibonacciButtonLoader, stringButtonLoader, isStackEmpty, queueSucsess, deleteQueueButton, clearQueueButton, resetArray, typeSort, isLoader, index, listString } = useSelector(stringSelector);
     const [stringValue, setStringValue] = useState(Array);
     const [stringValue1, setStringValue1] = useState('');
     const [isStringValueEmpty, setIsStringValueEmpty] = useState(true);
@@ -22,9 +22,9 @@ export const InputForm: any = (props: { delete: () => void; clear: () => void; r
     const [isStackValueEmpty, setIsStackValueEmpty] = useState(true);
     const [queueValue, setQueueValue] = useState('');
     const [isQueueValueEmpty, setIsQueueValueEmpty] = useState(true);
+    const [indexValue, setIndexValue] = useState('');
+    const [listValue, setListValue] = useState('');
     const location = useLocation();
-    console.log(location.pathname)
-
 
     //Ругается если тип FormEvent<HTMLInputElement> и все равно ругается, если тип React.ChangeEvent<HTMLInputElement>, поэтому тут any
     function handleChangeString(e: any) {
@@ -102,10 +102,6 @@ export const InputForm: any = (props: { delete: () => void; clear: () => void; r
         dispatch(getQueue(queueValue))
     }
 
-    function resetSortingArray() {
-        dispatch(resetArray(resetArray + 1))
-    }
-
     if (location.pathname === '/recursion') {
         return (<>
             <div className={styles.main_conteiner}>
@@ -167,12 +163,12 @@ export const InputForm: any = (props: { delete: () => void; clear: () => void; r
                 // onSubmit={(e) => handleClickQueue(e)}
                 >
                     <div className={styles.radio_conteiner}>
-                        <div className={styles.radio}><RadioInput label={"Выбор"}></RadioInput></div>
-                        <div className={styles.radio}><RadioInput label={"Пузырёк"}></RadioInput></div>
+                        <div className={styles.radio}><RadioInput checked={typeSort === "choice"} onChange={() => dispatch(setTypeSort("choice"))} label={"Выбор"}></RadioInput></div>
+                        <div className={styles.radio}><RadioInput checked={typeSort === "bubble"} onChange={() => dispatch(setTypeSort("bubble"))} label={"Пузырёк"}></RadioInput></div>
                     </div>
-                    <div className={styles.upButton}><Button sorting={Direction.Ascending} onClick={props.startSortingUp} text='По возрастанию' type='button'></Button></div>
-                    <div className={styles.downButton}><Button sorting={Direction.Descending} text='По убыванию' type='button'></Button></div>
-                    <div className={styles.newButton}><Button onClick={props.random} text='Новый массив' type='button'></Button></div>
+                    <div className={styles.upButton}><Button isLoader={isLoader} sorting={Direction.Ascending} onClick={props.clickSortingAscending} text='По возрастанию' type='button'></Button></div>
+                    <div className={styles.downButton}><Button isLoader={isLoader} sorting={Direction.Descending} onClick={props.clickSortingDescending} text='По убыванию' type='button'></Button></div>
+                    <div className={styles.newButton}><Button isLoader={isLoader} onClick={props.random} text='Новый массив' type='button'></Button></div>
                 </form>
             </div>
         </>)
@@ -184,17 +180,37 @@ export const InputForm: any = (props: { delete: () => void; clear: () => void; r
                 >
                     <div className={styles.up_conteiner}>
                         <div className={styles.input1}>
-                            <Input placeholder='Введите значение' isLimitText maxLength={4}></Input>
+                            <Input value={listValue} onChange={(e: any) => {
+                                setListValue(e.target.value)
+                            }} placeholder='Введите значение' isLimitText maxLength={4}></Input>
                         </div>
-                        <Button extraClass={styles.addButton1} text='Добавить в head' type='button'></Button>
-                        <Button extraClass={styles.addButton1} text='Добавить в tail' type='button'></Button>
-                        <Button extraClass={styles.addButton1} text='Удалить из head' type='button'></Button>
-                        <Button extraClass={styles.addButton1} text='Удалить из tail' type='button'></Button>
+                        <Button onClick={() => {
+                            // dispatch(setListString(listValue));
+                            props.addToHead(listValue)
+                        }} extraClass={styles.addButton1} text='Добавить в head' type='button'></Button>
+                        <Button onClick={() => {
+                            // dispatch(setListString(listValue))
+                            props.addToTail(listValue)
+                        }} extraClass={styles.addButton1} text='Добавить в tail' type='button'></Button>
+                        <Button onClick={() => {
+                            props.removeFromHead()
+                        }} extraClass={styles.addButton1} text='Удалить из head' type='button'></Button>
+                        <Button onClick={() => {
+                            props.removeFromTail()
+                        }} extraClass={styles.addButton1} text='Удалить из tail' type='button'></Button>
                     </div>
                     <div className={styles.down_conteiner}>
-                        <div><Input placeholder='Введите индекс'></Input></div>
-                        <Button extraClass={styles.addButton2} text='Добавить по индексу' type='button'></Button>
-                        <Button extraClass={styles.addButton2} text='Удалить по индексу' type='button'></Button>
+                        <div><Input value={index} onChange={(e: any) => {
+                            setIndexValue(e.target.value)
+                        }} placeholder='Введите индекс' maxLength={1}></Input></div>
+                        <Button extraClass={styles.addButton2} onClick={() => {
+                            props.addToIndex(indexValue, listValue);
+
+                        }} text='Добавить по индексу' type='button'></Button>
+                        <Button extraClass={styles.addButton2}
+                            onClick={() => {
+                                props.removeToIndex(indexValue, listString);
+                            }} text='Удалить по индексу' type='button'></Button>
                     </div>
                 </form>
             </div>

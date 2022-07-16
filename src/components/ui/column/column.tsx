@@ -12,7 +12,8 @@ export const Column: React.FC<ColumnProps> = ({
   index,
   state = ElementStates.Default,
   extraClass = "",
-}) => (
+}) => {
+  return (
   <div className={`${styles.content} ${extraClass}`}>
     <div
       className={`${styles.column} ${styles[state]}`}
@@ -21,3 +22,4 @@ export const Column: React.FC<ColumnProps> = ({
     <p className={`text text_type_column text_color_input mt-3`}>{index}</p>
   </div>
 );
+  }

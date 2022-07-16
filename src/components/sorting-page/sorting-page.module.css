@@ -15,11 +15,11 @@
     margin-left: 0px;
 }
 
-.colummn{
+.column{
     margin-right: 10px;
     align-self: flex-end;
 }
 
-.colummn:last-child{
+.column:last-child{
     margin-right: 0px;
 }
