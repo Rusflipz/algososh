@@ -1,22 +1,18 @@
-import { AnyCnameRecord } from "dns";
 import React, { useCallback, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { stringSelector } from "../../services/slice/slice";
 import { Direction } from "../../types/direction";
 import { ElementStates } from "../../types/element-states";
-import { InputForm } from "../input-form/input-form";
+import { pause, swap } from "../../utils/utils";
+import { Button } from "../ui/button/button";
 import { Column } from "../ui/column/column";
+import { RadioInput } from "../ui/radio-input/radio-input";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import styles from "./sorting-page.module.css";
-import { setInProgress } from "../../services/slice/slice";
 
-export const SortingPage: any = () => {
-
-  const dispatch = useDispatch()
-
-  const { typeSort } = useSelector(stringSelector);
+export const SortingPage: React.FC = () => {
 
   const [arrayValue, setArrayValue] = useState(Array<any>);
+  const [typeSort, setTypeSort] = useState<string>('choice');
+  const [isLoader, setIsLoader] = useState(false);
 
   function randomArray() {
     let array = []
@@ -46,7 +42,7 @@ export const SortingPage: any = () => {
       stepCounter = 1
     }
 
-    dispatch(setInProgress(true));
+    setIsLoader(true)
     const tempArr = [...arrayValue]
 
     if (sortType === "choice") {
@@ -65,7 +61,7 @@ export const SortingPage: any = () => {
       }
     }
 
-    dispatch(setInProgress(false));
+    setIsLoader(false)
   }
 
   const selectionSortAlgo = (
@@ -187,16 +183,6 @@ export const SortingPage: any = () => {
     return { resultArray: arr, countSteps: currentStep };
   };
 
-  const swap = (arr: Array<any>, left: number, right: number) => {
-    const temp = arr[left];
-    arr[left] = arr[right];
-    arr[right] = temp
-  }
-
-  const pause = async (ms: number) => {
-    return new Promise(resolve => setTimeout(resolve, ms))
-  }
-
   function clickSortingAscending() {
     startSort('ascending', typeSort)
   }
@@ -213,7 +199,34 @@ export const SortingPage: any = () => {
 
   return (
     <SolutionLayout title="Сортировка массива">
-      <InputForm random={randomArray} clickSortingAscending={clickSortingAscending} clickSortingDescending={clickSortingDescending}></InputForm>
+      <div className={styles.main_conteiner}>
+        <form className={styles.row_conteiner}>
+          <div className={styles.radio_conteiner}>
+            <div className={styles.radio}><RadioInput
+              checked={typeSort === "choice"}
+              onChange={() => setTypeSort("choice")}
+              label={"Выбор"}></RadioInput></div>
+            <div className={styles.radio}><RadioInput
+              checked={typeSort === "bubble"}
+              onChange={() => setTypeSort("bubble")}
+              label={"Пузырёк"}></RadioInput></div>
+          </div>
+          <div className={styles.upButton}><Button
+            isLoader={isLoader}
+            sorting={Direction.Ascending}
+            onClick={clickSortingAscending}
+            text='По возрастанию' type='button'></Button></div>
+          <div className={styles.downButton}><Button
+            isLoader={isLoader}
+            sorting={Direction.Descending}
+            onClick={clickSortingDescending}
+            text='По убыванию' type='button'></Button></div>
+          <div className={styles.newButton}><Button
+            isLoader={isLoader}
+            onClick={randomArray}
+            text='Новый массив' type='button'></Button></div>
+        </form>
+      </div>
       <div className={styles.circle_conteiner}>
         {arrayValue && arrayValue.map((letter: any, index: number) =>
           <div key={index} className={styles.column}>
