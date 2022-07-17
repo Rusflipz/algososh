@@ -1,4 +1,4 @@
-.circle_conteiner{
+.circle_conteiner {
     width: fit-content;
     margin: 0 auto;
     display: flex;
@@ -7,19 +7,99 @@
     min-height: 340px;
 }
 
-.circle{
+.circle {
     margin-left: 16px;
 }
 
-.circle:first-child{
+.circle:first-child {
     margin-left: 0px;
 }
 
-.column{
+.column {
     margin-right: 10px;
     align-self: flex-end;
 }
 
-.column:last-child{
+.column:last-child {
     margin-right: 0px;
+}
+
+.main_conteiner {
+    margin: 0 auto;
+    width: fit-content;
+}
+
+.row_conteiner {
+    margin: 0 auto;
+    display: flex;
+    flex-direction: row;
+    width: fit-content;
+}
+
+.input_conteiner {
+    width: 377px;
+    margin-right: 12px;
+}
+
+.text {
+    margin: 0;
+    text-align: left;
+    margin-top: 4px;
+    margin-left: 15px;
+}
+
+.addButton {
+    margin-right: 12px;
+}
+
+.deleteButton {
+    margin-right: 80px;
+}
+
+.radio_conteiner {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+}
+
+.radio:first-child {
+    margin-right: 45px;
+}
+
+.radio:last-child {
+    margin-right: 52px;
+}
+
+.upButton {
+    margin-right: 12px;
+}
+
+.downButton {
+    margin-right: 80px;
+}
+
+.up_conteiner {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 12px;
+}
+
+.down_conteiner {
+    display: flex;
+    flex-direction: row;
+}
+
+.addButton1 {
+    margin-left: 12px;
+    width: 175px;
+}
+
+.addButton2 {
+    margin-left: 12px;
+    width: 362px;
+}
+
+.row_conteiner1 {
+    display: flex;
+    flex-direction: column;
 }

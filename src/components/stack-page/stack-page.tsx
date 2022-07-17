@@ -1,87 +1,130 @@
 import React, { useEffect, useState } from "react";
 import styles from "./stack-page.module.css";
-import { InputForm } from "../input-form/input-form";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
-import { useDispatch, useSelector } from "react-redux";
-import { doStackEmpty, doStackFalse, doStackFull, getStack, stringSelector } from "../../services/slice/slice";
 import { Circle } from "../ui/circle/circle";
 import { ElementStates } from "../../types/element-states";
+import { IStackObject, Stack } from "./utils";
+import { Button } from "../ui/button/button";
+import { Input } from "../ui/input/input";
+import { IStack } from "./utils";
+import { pause } from "../../utils/utils";
 
 export const StackPage: React.FC = () => {
+  const stackInstanse = new Stack<string>();
+  const [inputValue, setInputValue] = useState(String);
+  const [renderValues, setRenderValues] = useState<Array<IStackObject>>([]);
+  const [stackValues, setStackValues] = useState<IStack<string>>(stackInstanse);
+  const [isStackEmpty, setIsStackEmpty] = useState(true);
+  const [inProgress, setInProgress] = useState(false);
 
-  const dispatch = useDispatch();
-
-  const { stack, stackSucsess } = useSelector(stringSelector);
-
-  const [arrayValue, setArrayValue] = useState(Array);
-  const [lastCircle, setLastCircle] = useState(ElementStates.Default);
-
+  //проверяем пустой ли стек
   useEffect(() => {
-    if (arrayValue.length > 0) {
-      dispatch(doStackFull())
+    if (renderValues.length > 0) {
+      setIsStackEmpty(false)
     } else {
-      dispatch(doStackEmpty())
+      setIsStackEmpty(true)
     }
-  }, [arrayValue])
+  }, [renderValues])
 
-  useEffect(() => {
-    if (stack != '') {
-      if (arrayValue.length < 6) {
-        let arr = arrayValue.slice()
-        arr.push(stack)
-        render(...arr)
-      } else {
-        let arr = arrayValue.slice()
-        render(...arr)
-      }
-
-    }
-  }, [stack])
-
+  //очищаем всё при размонтировании
   useEffect(() => {
     return () => {
-      dispatch(doStackFalse());
-      dispatch(getStack(''));
+      resetInput()
       clearStack()
     }
   }, [])
 
-  function render(...arr: any) {
-    setLastCircle(ElementStates.Changing)
-    setArrayValue(arr)
-    setTimeout(function () {
-      setLastCircle(ElementStates.Default)
-    }, 500)
-  }
+  //Добавляем значение
+  const PushStack = async () => {
+    setInProgress(true);
+    stackValues.push(inputValue);
+    const newElement = stackValues.peak();
+    renderValues.push({
+      letter: newElement,
+      state: ElementStates.Changing,
+      head: "top",
+    });
+    setRenderValues([...renderValues]);
+    await pause(500);
+    renderValues[renderValues.length - 1].state = ElementStates.Default;
+    setRenderValues([...renderValues]);
+    resetInput();
+    setInProgress(false);
+  };
 
-  function renderCircle(letter: string, index: any) {
-    if (index === (arrayValue.length - 1)) {
-      return <div key={index} className={`${styles.circle}`}><Circle index={index} letter={letter} head={'top'} state={lastCircle} /></div>
+  //Удаляем значение из стека
+  const PopStack = async () => {
+    setInProgress(true);
+    stackValues!.pop();
+    const size = stackValues.getSize();
+    if (size !== 0) {
+      renderValues[renderValues.length - 1].state = ElementStates.Changing;
+      renderValues[renderValues.length - 1].head = "top";
+      setRenderValues([...renderValues]);
+      renderValues.pop();
+      await pause(500);
+      setRenderValues([...renderValues]);
     } else {
-      return <div key={index} className={`${styles.circle}`}><Circle index={index} letter={letter} /></div>
+      setRenderValues([]);
     }
+    setInProgress(false);
+  };
+
+  //Сбрасывем инпут
+  const resetInput = () => {
+    setInputValue("");
   }
 
-  function deleteStack() {
-    setLastCircle(ElementStates.Changing)
-    setTimeout(function () {
-      let arr = arrayValue.slice()
-      arr.pop()
-      setArrayValue(arr)
-      setLastCircle(ElementStates.Default)
-    }, 500)
-  }
-
+  //Очичаем стек
   function clearStack() {
-    let arr: never[] = []
-    render(...arr)
+    setRenderValues([])
+  }
+
+
+  //Запуск добавления в стек
+  function handleClickStack(e: any) {
+    e.preventDefault();
+    PushStack()
+  }
+
+  //изменения инпута
+  function handleChangeStack(e: any) {
+    e.preventDefault();
+    setInputValue(e.target.value)
+  }
+
+  function renderCircle(elem: any, index: any) {
+    if (index === renderValues.length - 1) {
+      return <div key={index} className={`${styles.circle}`}>
+        <Circle index={index} letter={elem.letter} head={'top'} state={elem.state} />
+      </div>
+    } else {
+      return <div key={index} className={`${styles.circle}`}>
+        <Circle index={index} letter={elem.letter} state={elem.state} />
+      </div>
+    }
   }
 
   return (
     <SolutionLayout title="Стек">
-      <InputForm delete={deleteStack} clear={clearStack}></InputForm>
+      <div className={styles.main_conteiner}>
+        <form className={styles.row_conteiner}
+          onSubmit={(e) => handleClickStack(e)}
+        >
+          <div className={styles.input_conteiner}>
+            <Input
+              value={inputValue}
+              placeholder='Введите текст' isLimitText maxLength={4}
+              onChange={e => handleChangeStack(e)}
+            ></Input>
+          </div>
+          <div className={styles.addButton}><Button isLoader={inProgress} disabled={!inputValue} text='Добавить' type='submit'></Button></div>
+          <div className={styles.deleteButton}><Button isLoader={inProgress} disabled={isStackEmpty} onClick={PopStack} text='Удалить' type='button'></Button></div>
+          <div className={styles.clearButton}><Button isLoader={inProgress} disabled={isStackEmpty} onClick={clearStack} text='Очистить' type='button'></Button></div>
+        </form>
+      </div>
       <div className={styles.circle_conteiner}>
-        {stackSucsess && arrayValue.map((letter: any, index: number) => renderCircle(letter, index))
+        {renderValues.map((elem: any, index: number) => renderCircle(elem, index))
         }
       </div>
     </SolutionLayout>
