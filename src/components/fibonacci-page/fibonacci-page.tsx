@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FormEventHandler, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "../ui/button/button";
 import { Circle } from "../ui/circle/circle";
 import { Input } from "../ui/input/input";
@@ -7,7 +7,7 @@ import styles from "./fibonacci-page.module.css";
 
 export const FibonacciPage: React.FC = () => {
 
-  const [stringValue, setStringValue] = useState(Array);
+  const [stringValue, setStringValue] = useState(Array<number>);
   const [fibonacci, setFibonacci] = useState<number | null>(null);
   const [fibonacciValue, setFibonacciValue] = useState(String);
   const [isButtonLoader, setIsButtonLoader] = useState(false);
@@ -67,14 +67,18 @@ export const FibonacciPage: React.FC = () => {
   }
 
   // Отрисовка массива
-  function render(...array: any) {
+  function render(...array: Array<number>) {
     setStringValue(array)
   }
 
   // Изменение инпута
   function handleChangeFibonacci(e: React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
-    setFibonacciValue(e.target.value)
+    // Добавил проврку чтобы даже ввести число больше 18 было нельзя
+    const num: number = Number(e.target.value)
+    if (num <= 19) {
+      setFibonacciValue(e.target.value)
+    }
   }
 
   // Изменение значения fibanacci
@@ -98,7 +102,8 @@ export const FibonacciPage: React.FC = () => {
         </form>
       </div>
       <div className={styles.circle_conteiner}>
-        {stringValue.map((letter: any, index: number) => <div key={index} className={`${styles.circle}`}><Circle index={index} letter={letter} /></div>)
+
+        {stringValue.map((letter, index) => <div key={index} className={`${styles.circle}`}><Circle index={index} letter={letter} /></div>)
         }
       </div>
     </SolutionLayout>

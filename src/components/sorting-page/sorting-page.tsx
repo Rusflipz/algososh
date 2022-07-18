@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Direction } from "../../types/direction";
 import { ElementStates } from "../../types/element-states";
 import { pause, swap } from "../../utils/utils";
@@ -7,16 +7,17 @@ import { Column } from "../ui/column/column";
 import { RadioInput } from "../ui/radio-input/radio-input";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import styles from "./sorting-page.module.css";
+import { ISortingObject } from "./utils";
 
 export const SortingPage: React.FC = () => {
 
-  const [arrayValue, setArrayValue] = useState(Array<any>);
+  const [arrayValue, setArrayValue] = useState(Array<ISortingObject>);
   const [typeSort, setTypeSort] = useState<string>('choice');
   const [isLoader, setIsLoader] = useState(false);
 
   function randomArray() {
     let array = []
-    let index = (Math.floor(Math.random() * 15) + 3);
+    const index = (Math.floor(Math.random() * 15) + 3);
     for (let i = 0; i < index; i++) {
       array.push({
         num: (Math.round(Math.random() * 100)),
@@ -24,18 +25,17 @@ export const SortingPage: React.FC = () => {
       })
     }
     setArrayValue(array)
-    let copyArray = array.slice();
   }
 
   useEffect(() => {
     randomArray()
   }, [])
 
-  const startSort = async (direction: any, sortType: string) => {
+  const startSort = async (direction: Direction, sortType: string) => {
     let stepCounter = 1
 
     if (arrayValue[0].state === 'modified') {
-      setArrayValue(arrayValue.map((item: any) => {
+      setArrayValue(arrayValue.map((item: ISortingObject) => {
         item.state = ElementStates.Default;
         return item
       }))
@@ -66,9 +66,9 @@ export const SortingPage: React.FC = () => {
 
   const selectionSortAlgo = (
     option: Direction,
-    initialArr: any[],
+    initialArr: Array<ISortingObject>,
     step?: number
-  ): { resultArray: any[]; countSteps: number } => {
+  ): { resultArray: Array<ISortingObject>; countSteps: number } => {
     const arrTemp = [...initialArr];
 
     arrTemp.forEach((item) => (item.state = ElementStates.Default));
@@ -136,9 +136,9 @@ export const SortingPage: React.FC = () => {
 
   const bubbleSortAlgo = (
     option: Direction,
-    initialArr: any,
+    initialArr: Array<ISortingObject>,
     step?: number
-  ): { resultArray: any; countSteps: number } => {
+  ): { resultArray: Array<ISortingObject>; countSteps: number } => {
 
     const arr = [...initialArr];
     arr.forEach(item => (item.state = ElementStates.Default));
@@ -184,14 +184,14 @@ export const SortingPage: React.FC = () => {
   };
 
   function clickSortingAscending() {
-    startSort('ascending', typeSort)
+    startSort(Direction.Ascending, typeSort)
   }
 
   function clickSortingDescending() {
-    startSort('descending', typeSort)
+    startSort(Direction.Descending, typeSort)
   }
 
-  const focusingCurrentElements = (arr: any, currentIndex: number, status: ElementStates) => {
+  const focusingCurrentElements = (arr: Array<ISortingObject>, currentIndex: number, status: ElementStates) => {
     arr[currentIndex].state = status;
     arr[currentIndex + 1].state = status;
     if (arr[currentIndex - 1]) arr[currentIndex - 1].state = ElementStates.Default;
@@ -228,7 +228,7 @@ export const SortingPage: React.FC = () => {
         </form>
       </div>
       <div className={styles.circle_conteiner}>
-        {arrayValue && arrayValue.map((letter: any, index: number) =>
+        {arrayValue && arrayValue.map((letter: ISortingObject, index) =>
           <div key={index} className={styles.column}>
             <Column index={letter.num} state={letter.state} />
           </div>

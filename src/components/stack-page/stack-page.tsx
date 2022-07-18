@@ -14,6 +14,7 @@ export const StackPage: React.FC = () => {
   const [inputValue, setInputValue] = useState(String);
   const [renderValues, setRenderValues] = useState<Array<IStackObject>>([]);
   const [stackValues, setStackValues] = useState<IStack<string>>(stackInstanse);
+  const [isStackFull, setIsStackFull] = useState(false);
   const [isStackEmpty, setIsStackEmpty] = useState(true);
   const [inProgress, setInProgress] = useState(false);
 
@@ -23,6 +24,15 @@ export const StackPage: React.FC = () => {
       setIsStackEmpty(false)
     } else {
       setIsStackEmpty(true)
+    }
+  }, [renderValues])
+
+  //Проверяем не переполнен ли
+  useEffect(() => {
+    if (renderValues.length >= 10) {
+      setIsStackFull(true)
+    } else {
+      setIsStackFull(false)
     }
   }, [renderValues])
 
@@ -93,7 +103,7 @@ export const StackPage: React.FC = () => {
     setInputValue(e.target.value)
   }
 
-  function renderCircle(elem: any, index: any) {
+  function renderCircle(elem: IStackObject, index: number) {
     if (index === renderValues.length - 1) {
       return <div key={index} className={`${styles.circle}`}>
         <Circle index={index} letter={elem.letter} head={'top'} state={elem.state} />
@@ -118,13 +128,13 @@ export const StackPage: React.FC = () => {
               onChange={handleChangeStack}
             ></Input>
           </div>
-          <div className={styles.addButton}><Button isLoader={inProgress} disabled={!inputValue} text='Добавить' type='submit'></Button></div>
+          <div className={styles.addButton}><Button isLoader={inProgress} disabled={!inputValue || isStackFull} text='Добавить' type='submit'></Button></div>
           <div className={styles.deleteButton}><Button isLoader={inProgress} disabled={isStackEmpty} onClick={PopStack} text='Удалить' type='button'></Button></div>
           <div className={styles.clearButton}><Button isLoader={inProgress} disabled={isStackEmpty} onClick={clearStack} text='Очистить' type='button'></Button></div>
         </form>
       </div>
       <div className={styles.circle_conteiner}>
-        {renderValues.map((elem: any, index: number) => renderCircle(elem, index))
+        {renderValues.map((elem, index) => renderCircle(elem, index))
         }
       </div>
     </SolutionLayout>

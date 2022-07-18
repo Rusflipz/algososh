@@ -3,7 +3,7 @@ import { ElementStates } from "../../types/element-states";
 export const MAX_SIZE = 7
 
 export interface QueueObject {
-    letter?: string | null;
+    letter?: string | null | undefined;
     state: ElementStates;
     tail?: string;
     head?: string;

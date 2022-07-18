@@ -6,10 +6,10 @@ export interface listItemProps {
     noArrow?: boolean;
     tail?: string;
     head?: string;
-    char?: string;
+    test?: number;
     state?: ElementStates;
     extraCircle?: {
-        char: string;
+        test: string;
     }
 }
 
@@ -47,7 +47,7 @@ export class LinkedList<T> implements ILinkedList<T> {
 
     // Добавить в начало
     addToHead = (value: T) => {
-        let node = new Node<T>(value);
+        const node = new Node<T>(value);
         if (!this.head) {
             this.head = node;
             return this;
@@ -60,7 +60,7 @@ export class LinkedList<T> implements ILinkedList<T> {
 
     // Добавить в конец
     addToTail(value: T) {
-        let node = new Node(value);
+        const node = new Node(value);
         if (this.size === 0) {
             this.head = node;
         }
@@ -77,7 +77,7 @@ export class LinkedList<T> implements ILinkedList<T> {
     deleteHead() {
         // Пустой список
         if (!this.head) return null;
-        let deletedHead = this.head;
+        const deletedHead = this.head;
 
         // Делаем новый head
 
@@ -118,7 +118,7 @@ export class LinkedList<T> implements ILinkedList<T> {
             return null;
         }
 
-        let node = new Node<T>(value);
+        const node = new Node<T>(value);
         if (index === 0) {
             node.next = this.head;
             this.head = node;
