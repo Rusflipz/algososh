@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { ElementStates } from "../../types/element-states";
 import { pause } from "../../utils/utils";
 import { IStackObject } from "../stack-page/utils";
@@ -71,11 +71,11 @@ export const QueuePage: React.FC = () => {
     const tail = queue.getTail();
     if (head === tail) clearQueue();
     else {
-      let currentHead = queue.getHead();
+      const currentHead = queue.getHead();
       tempArr[currentHead].state = ElementStates.Changing;
       await pause(500);
       queue.dequeue()
-      let currentHead1 = queue.getHead();
+      const currentHead1 = queue.getHead();
       if (currentHead1 > 0) {
         tempArr[currentHead1 - 1].head = "";
         tempArr[currentHead1 - 1].letter = "";
@@ -101,8 +101,7 @@ export const QueuePage: React.FC = () => {
     setInputValue("");
   };
 
-  function renderCircle(element: any, index: any) {
-    console.log()
+  function renderCircle(element: QueueObject, index: number) {
     return <div key={index} className={`${styles.circle}`}>
       <Circle index={index} letter={element.letter} head={element.head} tail={element.tail} state={element.state} />
     </div>
@@ -142,7 +141,7 @@ export const QueuePage: React.FC = () => {
         </form>
       </div>
       <div className={styles.circle_conteiner}>
-        {renderValues.map((letter: any, index: number) => renderCircle(letter, index))
+        {renderValues.map((letter, index) => renderCircle(letter, index))
         }
       </div>
     </SolutionLayout>

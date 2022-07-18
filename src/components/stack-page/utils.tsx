@@ -26,7 +26,7 @@ export class Stack<T> implements IStack<T> {
     };
 
     peak = () => {
-        let size = this.getSize()
+        const size = this.getSize()
         if (size != 0) {
             return this.container[this.getSize() - 1]
         }

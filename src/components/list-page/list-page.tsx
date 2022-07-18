@@ -14,8 +14,8 @@ export const ListPage: React.FC = () => {
   const [inputValue, setInputValue] = useState<string>('');
   const [indexValue, setIndexValue] = useState<string>('');
   const [isLoader, setIsLoader] = useState<boolean>(false);
-  const [array, setArray] = useState<any>([]);
-  const [linkedList, setLinkedList] = useState<any>([]);
+  const [array, setArray] = useState(Array<listItemProps>);
+  const [linkedList, setLinkedList] = useState(Object);
   const [isMaxLength, setIsMaxLength] = useState(false);
   const [isMinLength, setIsMinLength] = useState(false);
 
@@ -45,7 +45,7 @@ export const ListPage: React.FC = () => {
     //Создаем инстанс класса
     const newLinkedList = new LinkedList(randomStringsArray);
 
-    const initRenderCircle: listItemProps[] = randomStringsArray.map((item) => {
+    const initRenderCircle = randomStringsArray.map((item) => {
       return {
         test: item,
         state: ElementStates.Default,
@@ -57,7 +57,7 @@ export const ListPage: React.FC = () => {
   }, []);
 
   const addRenderPreviewCircleTop = (
-    arr: any,
+    arr: Array<listItemProps>,
     index: number,
     value: string | null
   ) => {
@@ -71,7 +71,7 @@ export const ListPage: React.FC = () => {
     };
   };
 
-  const removeRenderPreviewCircleTop = (arr: any, index: number, listString: any) => {
+  const removeRenderPreviewCircleTop = (arr: Array<listItemProps>, index: number, listString: string) => {
     const firstElement = arr[index];
     arr[index] = {
       ...firstElement,
@@ -83,7 +83,7 @@ export const ListPage: React.FC = () => {
   };
 
   const addRenderPreviewCircleBottom = (
-    arr: any,
+    arr: Array<listItemProps>,
     index: number,
     value?: string | null
   ) => {
@@ -97,9 +97,9 @@ export const ListPage: React.FC = () => {
     };
   };
 
-  const copyArr: any = [...array];
+  const copyArr: Array<listItemProps> = [...array];
 
-  const addToHead = async (listString: any) => {
+  const addToHead = async (listString: string) => {
     setIsLoader(true)
     linkedList!.addToHead(listString);
     const currentHeadValue = linkedList!.getNodeToIndex(0);
@@ -139,7 +139,7 @@ export const ListPage: React.FC = () => {
     setIsLoader(false)
   };
 
-  const addToTail = async (listString: any) => {
+  const addToTail = async (listString: string) => {
     setIsLoader(true);
     linkedList!.addToTail(listString);
     const tailIdx = linkedList!.getSize() - 1;
@@ -160,7 +160,7 @@ export const ListPage: React.FC = () => {
     setArray([...copyArr]);
     await pause(500);
 
-    copyArr.forEach((el: any) => (el.state = ElementStates.Default));
+    copyArr.forEach((el: listItemProps) => (el.state = ElementStates.Default));
     setArray([...copyArr]);
     setInputValue('')
     setIsLoader(false)
@@ -181,12 +181,12 @@ export const ListPage: React.FC = () => {
     await pause(500);
   };
 
-  const addToIndex = async (idx: number, listString: any) => {
+  const addToIndex = async (idx: number, listString: string) => {
     if (idx > 6) {
       return null
     }
     setIsLoader(true)
-    const copyArr: any = [...array];
+    const copyArr: Array<listItemProps> = [...array];
     linkedList!.insertFromPosition(listString, idx);
     const newValue = linkedList!.getNodeToIndex(idx);
     for (let i = 0; i <= idx!; i++) {
@@ -218,7 +218,7 @@ export const ListPage: React.FC = () => {
     });
     setArray([...copyArr]);
     await pause(500);
-    copyArr.forEach((el: any) => (el.state = ElementStates.Default));
+    copyArr.forEach((el: listItemProps) => (el.state = ElementStates.Default));
     setIndexValue('')
     setIsLoader(false)
   };
@@ -238,12 +238,14 @@ export const ListPage: React.FC = () => {
     setArray([...copyArr]);
     await pause(500);
     copyArr.splice(idx!, 1);
-    copyArr.forEach((el: any) => (el.state = ElementStates.Default));
+    copyArr.forEach((el: listItemProps) => (el.state = ElementStates.Default));
     await pause(500);
     setArray([...copyArr]);
     setIndexValue('')
     setIsLoader(false)
   };
+
+
 
   return (
     <SolutionLayout title="Связный список" >
@@ -296,7 +298,7 @@ export const ListPage: React.FC = () => {
             <Button
               disabled={!inputValue || !indexValue || isMaxLength}
               extraClass={styles.addButton2} onClick={() => {
-                let index = Number(indexValue)
+                const index = Number(indexValue)
                 addToIndex(index, inputValue);
               }}
               isLoader={isLoader}
@@ -304,7 +306,7 @@ export const ListPage: React.FC = () => {
             <Button extraClass={styles.addButton2}
               disabled={!indexValue || isMinLength}
               onClick={() => {
-                let index = Number(indexValue)
+                const index = Number(indexValue)
                 removeToIndex(index);
               }}
               isLoader={isLoader}
@@ -313,7 +315,7 @@ export const ListPage: React.FC = () => {
         </form>
       </div>
       <div className={styles.circle_conteiner}>
-        {array.map((letter: any, index: any) => {
+        {array.map((letter: listItemProps, index: number) => {
           return (
             <div className={styles.block} key={index}>
               <Circle

@@ -21,8 +21,8 @@ export const StringComponent: React.FC = () => {
   const [couple5, setCouple5] = useState(ElementStates.Default);
   const [couple55, setCouple55] = useState(ElementStates.Default);
 
-  const [stringValue, setStringValue] = useState(Array);
-  const [stringValue1, setStringValue1] = useState(Array);
+  const [stringValue, setStringValue] = useState(Array<string>);
+  const [stringValue1, setStringValue1] = useState(Array<string>);
   const [inptValue, setInptValue] = useState('');
   const [isStringValueEmpty, setIsStringValueEmpty] = useState(true);
   const [isButtonLoader, setIsButtonLoader] = useState(false);
@@ -43,7 +43,7 @@ export const StringComponent: React.FC = () => {
     setCouple55(ElementStates.Default)
 
     //Проверка, сколько пар нужно развернуть
-    let score = Math.floor(stringValue.length / 2)
+    const score = Math.floor(stringValue.length / 2)
 
     //Если длина больше одного вешаем загрузку
     if (stringValue.length > 1) {
@@ -53,7 +53,7 @@ export const StringComponent: React.FC = () => {
 
     //Если длина больше одного, копируес массив и заходми в цикл
     if (stringValue.length > 0) {
-      let arr = stringValue.slice()
+      const arr: Array<string> = stringValue.slice()
       setStringValue1(arr)
       for (let i = 0; i < score; i++) {
         reverse(arr, score, i)
@@ -65,7 +65,7 @@ export const StringComponent: React.FC = () => {
   //Изменение параметров при размонтировании компонента
   useEffect(() => {
     return () => {
-      let arr: React.SetStateAction<unknown[]> = [];
+      const arr: Array<string> = [];
       //Очищаем массив
       setStringValue(arr)
       //Делаем кнопку активной
@@ -74,7 +74,7 @@ export const StringComponent: React.FC = () => {
   }, [])
 
   //Функция, меняющая местами пары 
-  function reverse(arr: any[], score: number, i: number) {
+  function reverse(arr: Array<string>, score: number, i: number) {
     setTimeout(function () {
       if (i === (score - 1)) {
         //Делаем кнопку активной если закончили
@@ -82,13 +82,13 @@ export const StringComponent: React.FC = () => {
       }
       arr.splice(i, 1, stringValue[(stringValue.length - 1) - i])
       arr.splice((arr.length - 1) - i, 1, stringValue[i])
-      render(i, ...arr)
+      render(i)
       setStringValue1(arr)
     }, 1000 * (i + 1));
   }
 
   // присвает state в зависимости от расположения
-  function render(i: number, ...arr: any[]) {
+  function render(i: number) {
     if (i === 0) {
       setCouple1(ElementStates.Modified)
       setCouple11(ElementStates.Modified)
@@ -217,7 +217,7 @@ export const StringComponent: React.FC = () => {
         </form>
       </div>
       <div className={styles.circle_conteiner}>
-        {stringValue1 && stringValue1.map((letter: any, index: number) => CircleComponents(letter, index, shortid.generate()))}
+        {stringValue1 && stringValue1.map((letter, index: number) => CircleComponents(letter, index, shortid.generate()))}
       </div>
     </SolutionLayout>
   </>
