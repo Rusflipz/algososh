@@ -82,13 +82,13 @@ export const StackPage: React.FC = () => {
 
 
   //Запуск добавления в стек
-  function handleClickStack(e: any) {
+  function handleClickStack(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     PushStack()
   }
 
   //изменения инпута
-  function handleChangeStack(e: any) {
+  function handleChangeStack(e: React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
     setInputValue(e.target.value)
   }
@@ -115,7 +115,7 @@ export const StackPage: React.FC = () => {
             <Input
               value={inputValue}
               placeholder='Введите текст' isLimitText maxLength={4}
-              onChange={e => handleChangeStack(e)}
+              onChange={handleChangeStack}
             ></Input>
           </div>
           <div className={styles.addButton}><Button isLoader={inProgress} disabled={!inputValue} text='Добавить' type='submit'></Button></div>

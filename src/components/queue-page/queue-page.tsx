@@ -108,17 +108,15 @@ export const QueuePage: React.FC = () => {
     </div>
   }
 
-  function handleChangeQueue(e: any) {
+  function handleChangeQueue(e: React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
     setInputValue(e.target.value)
   }
 
-  function handleClickQueue(e: any) {
+  function handleClickQueue(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     enqueue()
   }
-
-  console.log()
 
   return (
     <SolutionLayout title="Очередь">
@@ -126,7 +124,7 @@ export const QueuePage: React.FC = () => {
         <form className={styles.row_conteiner}
           onSubmit={(e) => handleClickQueue(e)}>
           <div className={styles.input_conteiner}>
-            <Input value={inputValue} placeholder='Введите текст' isLimitText maxLength={4} onChange={e => handleChangeQueue(e)}></Input>
+            <Input value={inputValue} placeholder='Введите текст' isLimitText maxLength={4} onChange={handleChangeQueue}></Input>
           </div>
           <div className={styles.addButton}>
             <Button isLoader={inProgress} disabled={!inputValue} text='Добавить' type='submit'></Button>

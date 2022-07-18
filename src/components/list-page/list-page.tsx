@@ -182,7 +182,7 @@ export const ListPage: React.FC = () => {
   };
 
   const addToIndex = async (idx: number, listString: any) => {
-    if(idx > 6){
+    if (idx > 6) {
       return null
     }
     setIsLoader(true)
@@ -253,7 +253,7 @@ export const ListPage: React.FC = () => {
             <div className={styles.input1}>
               <Input
                 value={inputValue}
-                onChange={(e: any) => {
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   setInputValue(e.target.value)
                 }}
                 placeholder='Введите значение' isLimitText maxLength={4}></Input>
@@ -290,7 +290,7 @@ export const ListPage: React.FC = () => {
           <div className={styles.down_conteiner}>
             <div><Input
               value={indexValue}
-              onChange={(e: any) => {
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 setIndexValue(e.target.value)
               }} placeholder='Введите индекс' maxLength={1}></Input></div>
             <Button
