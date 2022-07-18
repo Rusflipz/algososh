@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, FormEventHandler, useEffect, useState } from "react";
 import { Button } from "../ui/button/button";
 import { Circle } from "../ui/circle/circle";
 import { Input } from "../ui/input/input";
@@ -72,15 +72,15 @@ export const FibonacciPage: React.FC = () => {
   }
 
   // Изменение инпута
-  function handleChangeFibonacci(e: any) {
+  function handleChangeFibonacci(e: React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
     setFibonacciValue(e.target.value)
   }
 
   // Изменение значения fibanacci
-  function handleClickFibonacci(e: any) {
+  function handleClickFibonacci(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    let num: number = Number(fibonacciValue)
+    const num: number = Number(fibonacciValue)
     setFibonacci(num)
   }
 
@@ -90,7 +90,7 @@ export const FibonacciPage: React.FC = () => {
         <form className={styles.row_conteiner}
           onSubmit={(e) => handleClickFibonacci(e)}>
           <div className={styles.input_conteiner}>
-            <Input value={fibonacciValue} placeholder='Введите текст' type="number" isLimitText max={19} onChange={e => handleChangeFibonacci(e)}></Input>
+            <Input value={fibonacciValue} placeholder='Введите текст' type="number" isLimitText max={19} onChange={handleChangeFibonacci}></Input>
           </div>
           {!fibonacciValue ? <Button disabled text='Рассчитать' type='submit'></Button> : <Button
             isLoader={isButtonLoader}

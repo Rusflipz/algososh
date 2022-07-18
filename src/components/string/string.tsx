@@ -22,7 +22,8 @@ export const StringComponent: React.FC = () => {
   const [couple55, setCouple55] = useState(ElementStates.Default);
 
   const [stringValue, setStringValue] = useState(Array);
-  const [stringValue1, setStringValue1] = useState('');
+  const [stringValue1, setStringValue1] = useState(Array);
+  const [inptValue, setInptValue] = useState('');
   const [isStringValueEmpty, setIsStringValueEmpty] = useState(true);
   const [isButtonLoader, setIsButtonLoader] = useState(false);
 
@@ -41,7 +42,7 @@ export const StringComponent: React.FC = () => {
     setCouple5(ElementStates.Default)
     setCouple55(ElementStates.Default)
 
-    //Проверка, сколько пар нудно развернуть
+    //Проверка, сколько пар нужно развернуть
     let score = Math.floor(stringValue.length / 2)
 
     //Если длина больше одного вешаем загрузку
@@ -53,6 +54,7 @@ export const StringComponent: React.FC = () => {
     //Если длина больше одного, копируес массив и заходми в цикл
     if (stringValue.length > 0) {
       let arr = stringValue.slice()
+      setStringValue1(arr)
       for (let i = 0; i < score; i++) {
         reverse(arr, score, i)
       }
@@ -81,10 +83,11 @@ export const StringComponent: React.FC = () => {
       arr.splice(i, 1, stringValue[(stringValue.length - 1) - i])
       arr.splice((arr.length - 1) - i, 1, stringValue[i])
       render(i, ...arr)
+      setStringValue1(arr)
     }, 1000 * (i + 1));
   }
 
-  //отрисовывает компоненты и присвает state в зависимости от расположения
+  // присвает state в зависимости от расположения
   function render(i: number, ...arr: any[]) {
     if (i === 0) {
       setCouple1(ElementStates.Modified)
@@ -183,21 +186,21 @@ export const StringComponent: React.FC = () => {
   }
 
   //меняет value у input
-  function handleChangeString(e: any) {
+  function handleChangeString(e: React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
     if (e.target.value == "") {
-      setStringValue1(e.target.value)
+      setInptValue(e.target.value)
       setIsStringValueEmpty(true)
     } else {
       setIsStringValueEmpty(false)
-      setStringValue1(e.target.value)
+      setInptValue(e.target.value)
     }
   }
 
   //меняет строку изапускает рендер
-  function handleClickString(e: any) {
+  function handleClickString(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setStringValue(Array.from(stringValue1))
+    setStringValue(Array.from(inptValue))
   }
 
   return (<>
@@ -206,7 +209,7 @@ export const StringComponent: React.FC = () => {
         <form className={styles.row_conteiner}
           onSubmit={(e) => handleClickString(e)}>
           <div className={styles.input_conteiner}>
-            <Input value={stringValue1} placeholder='Введите текст' isLimitText maxLength={11} onChange={e => handleChangeString(e)}></Input>
+            <Input value={inptValue} placeholder='Введите текст' isLimitText maxLength={11} onChange={handleChangeString}></Input>
           </div>
           {isStringValueEmpty ? <Button disabled text='Развернуть' type='submit'></Button> : <Button
             isLoader={isButtonLoader}
@@ -214,7 +217,7 @@ export const StringComponent: React.FC = () => {
         </form>
       </div>
       <div className={styles.circle_conteiner}>
-        {stringValue && stringValue.map((letter: any, index: number) => CircleComponents(letter, index, shortid.generate()))}
+        {stringValue1 && stringValue1.map((letter: any, index: number) => CircleComponents(letter, index, shortid.generate()))}
       </div>
     </SolutionLayout>
   </>
