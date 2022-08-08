@@ -254,6 +254,7 @@ export const ListPage: React.FC = () => {
           <div className={styles.up_conteiner}>
             <div className={styles.input1}>
               <Input
+                name="value"
                 value={inputValue}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   setInputValue(e.target.value)
@@ -291,6 +292,7 @@ export const ListPage: React.FC = () => {
           </div>
           <div className={styles.down_conteiner}>
             <div><Input
+              name="index"
               value={indexValue}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 setIndexValue(e.target.value)

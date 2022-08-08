@@ -6,11 +6,11 @@
     margin-top: 120px;
 }
 
-.circle {
+.circleMain {
     margin-left: 16px;
 }
 
-.circle:first-child {
+.circleMain:first-child {
     margin-left: 0px;
 }
 

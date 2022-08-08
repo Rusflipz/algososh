@@ -14,9 +14,6 @@ function App() {
     <div className={styles.app}>
       <BrowserRouter>
         <Switch>
-          <Route path="/" exact>
-            <MainPage />
-          </Route>
           <Route path="/recursion">
             <StringComponent />
           </Route>
@@ -34,6 +31,9 @@ function App() {
           </Route>
           <Route path="/list">
             <ListPage />
+          </Route>
+          <Route path="/">
+            <MainPage />
           </Route>
         </Switch>
       </BrowserRouter>
