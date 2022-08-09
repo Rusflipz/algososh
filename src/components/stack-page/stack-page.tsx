@@ -105,11 +105,11 @@ export const StackPage: React.FC = () => {
 
   function renderCircle(elem: IStackObject, index: number) {
     if (index === renderValues.length - 1) {
-      return <div key={index} className={`${styles.circle}`}>
+      return <div key={index} className={`${styles.circleMain}`}>
         <Circle index={index} letter={elem.letter} head={'top'} state={elem.state} />
       </div>
     } else {
-      return <div key={index} className={`${styles.circle}`}>
+      return <div key={index} className={`${styles.circleMain}`}>
         <Circle index={index} letter={elem.letter} state={elem.state} />
       </div>
     }

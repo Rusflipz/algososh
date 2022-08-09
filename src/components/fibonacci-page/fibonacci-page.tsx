@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
+import { pause } from "../../utils/utils";
 import { Button } from "../ui/button/button";
 import { Circle } from "../ui/circle/circle";
 import { Input } from "../ui/input/input";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import styles from "./fibonacci-page.module.css";
+import { getFibonacciNumbers } from "./utils";
 
 export const FibonacciPage: React.FC = () => {
 
@@ -12,16 +14,16 @@ export const FibonacciPage: React.FC = () => {
   const [fibonacciValue, setFibonacciValue] = useState(String);
   const [isButtonLoader, setIsButtonLoader] = useState(false);
 
-  // Начала рендера при изменении знаачения
-  useEffect(() => {
-    if (fibonacci == null) {
-    } else {
-      setStringValue([1])
-      getFibonacciNumbers(fibonacci)
-      // Ставит загрузку с кнопки
-      setIsButtonLoader(true)
-    }
-  }, [fibonacci])
+  // Начала рендера при изменении значения
+  // useEffect(() => {
+  //   if (fibonacci == null) {
+  //   } else {
+  //     setStringValue([1])
+  //     getFibonacciNumbers(fibonacci, setStringValue, setIsButtonLoader)
+  //     // Ставит загрузку с кнопки
+  //     setIsButtonLoader(true)
+  //   }
+  // }, [fibonacci])
 
   // Сброс данных при выходе
   useEffect(() => {
@@ -31,45 +33,6 @@ export const FibonacciPage: React.FC = () => {
       setFibonacciValue('')
     }
   }, [])
-
-  // Функция считающая число фибаначи
-  function getFibonacciNumbers(n: number) {
-    let array = [1]
-    if (n == 1) {
-      setTimeout(function () {
-        array.push(1)
-        render(...array)
-        // Убирает загрузку с кнопки
-        setIsButtonLoader(false)
-      }, 500)
-    } else {
-      array = [1]
-      setTimeout(function () {
-        array.push(1)
-        render(...array)
-      }, 500)
-      let a = 1;
-      let b = 1;
-      for (let i = 2; i <= n; i++) {
-        setTimeout(function () {
-          if (i == n) {
-            // Убирает загрузку с кнопки
-            setIsButtonLoader(false)
-          }
-          let c = a + b;
-          a = b;
-          b = c;
-          array.push(c)
-          render(...array)
-        }, 500 * (i - 1))
-      }
-    }
-  }
-
-  // Отрисовка массива
-  function render(...array: Array<number>) {
-    setStringValue(array)
-  }
 
   // Изменение инпута
   function handleChangeFibonacci(e: React.ChangeEvent<HTMLInputElement>) {
@@ -82,10 +45,22 @@ export const FibonacciPage: React.FC = () => {
   }
 
   // Изменение значения fibanacci
-  function handleClickFibonacci(e: React.FormEvent<HTMLFormElement>) {
+  async function handleClickFibonacci(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setIsButtonLoader(true)
+    let nums = [];
     const num: number = Number(fibonacciValue)
+    for (let i = 1; i <= num + 1; i++) {
+      await pause(500)
+      nums.push(getFibonacciNumbers(i))
+      setStringValue([...nums]);
+    }
     setFibonacci(num)
+    setIsButtonLoader(false)
+  }
+
+  function renderCircle(letter: string | number | null | undefined, index: number) {
+    return <div key={index} className={`${styles.circle}`}><Circle index={index} letter={letter} /></div>
   }
 
   return (
@@ -103,7 +78,7 @@ export const FibonacciPage: React.FC = () => {
       </div>
       <div className={styles.circle_conteiner}>
 
-        {stringValue.map((letter, index) => <div key={index} className={`${styles.circle}`}><Circle index={index} letter={letter} /></div>)
+        {stringValue.map((letter, index) => renderCircle(letter, index))
         }
       </div>
     </SolutionLayout>
